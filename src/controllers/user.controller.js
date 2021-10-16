@@ -57,8 +57,22 @@ let login = async function(req, res) {
     }
 }
 
+let getUser = async function(req, res) {
+    let id = req.params.id;
+    if(!id) return res.status(400).send({ error: true, message: "Missing id user!"});
+    try {
+        let userFound = await UserSchema.findById(id);
+        console.log(userFound);
+        if(!userFound) return res.status(404).send({ error : true, message: "User not found!"});
+        return res.status(200).send({ user: userFound, message : "User found succesfully!"});
+    } catch (error) {
+        return res.status(500).send({errorMessage: error})
+    }
+}
+
 
 module.exports = {
     createUser,
-    login
+    login,
+    getUser
 }
