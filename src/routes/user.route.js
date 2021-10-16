@@ -9,6 +9,6 @@ router.route('/signup')
 
 router.post("/login", userController.login);
 
-router.get('/getUser/:id', userController.getUser);
+router.get('/getUser', authMiddleware, userController.getUser);
 
 module.exports = router;

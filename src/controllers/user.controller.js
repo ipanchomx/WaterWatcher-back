@@ -44,21 +44,21 @@ let login = async function(req, res) {
         email = email.toLowerCase();
         let user = await UserSchema.findOne({email}).exec();
         if(user){
-            if(!bcrypt.compareSync(password, user.password)) res.sendStatus(401);
+            if(!bcryptjs.compareSync(password, user.password)) res.sendStatus(401);
             else {
-                const token = jwt.sign({email},process.env.TOKEN_SECRET);
+                const token = jwt.sign({id: user._id},process.env.TOKEN_SECRET);
                 res.json({token})
             }
         } else {
             res.sendStatus(401);
         }
     } catch (error) {
-        return res.status(500).send({errorMessage: error})
+        return res.status(500).send({errorMessage: error.stack})
     }
 }
 
 let getUser = async function(req, res) {
-    let id = req.params.id;
+    let id = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
     if(!id) return res.status(400).send({ error: true, message: "Missing id user!"});
     try {
         let userFound = await UserSchema.findById(id);
