@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 let dataSchema = mongoose.Schema({
     timestamp : {
-        type: String,
+        type: Number,
         required: true
     },
     idUser: {
