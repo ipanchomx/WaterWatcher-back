@@ -10,11 +10,11 @@ let dataSchema = mongoose.Schema({
         required: true 
     },
     flow: {
-        type: String,
+        type: Number,
         required: true
     },
     volume: {
-        type: String,
+        type: Number,
         required: true
     }
 });
