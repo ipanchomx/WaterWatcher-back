@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-let alertSchema = mongoose.userSchema({
+let alertSchema = mongoose.Schema({
     idUser: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true
     },
     name: {
@@ -13,11 +13,8 @@ let alertSchema = mongoose.userSchema({
         type: String,
         required: true,
     },
-    start: {
-        type: String,
-    },
-    end: {
-        type: String,
+    range : {
+        type: mongoose.Schema.Types.Mixed
     },
     limit: {
         type: Number,
@@ -30,7 +27,7 @@ let alertSchema = mongoose.userSchema({
         type: String,
     },
     contactChannel: {
-        type: String,
+        type: mongoose.Schema.Types.Mixed
     },
 });
 
