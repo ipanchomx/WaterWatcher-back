@@ -54,9 +54,9 @@ const createData = async (req, res) => {
             volume
         });
 
-        await newData.save();
+        let result = await newData.save();
 
-        if(newData) {
+        if(result) {
             return res.status(201).send({ data: newData, message: "Data created succesfully!" });
         } else {
             throw "Could not create data!";

@@ -4,8 +4,7 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
-router.route('/signup')
-    .post(userController.createUser);
+router.post('/signup', userController.createUser);
 
 router.post("/login", userController.login);
 

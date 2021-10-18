@@ -2,7 +2,7 @@ const UserSchema = require('../models/user.model');
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-let createUser = async function(req, res) {
+const createUser = async function(req, res) {
     let {
         name,
         password,
@@ -25,8 +25,8 @@ let createUser = async function(req, res) {
         }
     
         let userNew = UserSchema(newUser);
-        await userNew.save();
-        if(userNew) {
+        let result = await userNew.save();
+        if(result) {
             return res.status(201).send({user : userNew, message: "User created!"})
         } else {
             throw "Could not create user!";
@@ -37,7 +37,7 @@ let createUser = async function(req, res) {
 
 }
 
-let login = async function(req, res) {
+const login = async function(req, res) {
     let {email, password} = req.body;
     if(!email || !password) return res.sendStatus(400);
     try {
@@ -57,7 +57,7 @@ let login = async function(req, res) {
     }
 }
 
-let getUser = async function(req, res) {
+const getUser = async function(req, res) {
     let id = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
     if(!id) return res.status(400).send({ error: true, message: "Missing id user!"});
     try {
