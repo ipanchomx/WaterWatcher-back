@@ -44,7 +44,7 @@ const createData = async (req, res) => {
     let { flow, volume } = req.body;
     let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
     
-    if(!idUser || !flow || !volume) return res.status(400).send({error: true, message: 'Missing required fields!'});
+    if(!idUser || typeof flow === "undefined" || typeof volume === "undefined") return res.status(400).send({error: true, message: 'Missing required fields!'});
 
     try {
         let newData = dataSchema({
