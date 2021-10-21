@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.route('/')
     .get(authMiddleware, dataController.getTodayData)
-    .post(authMiddleware, dataController.createData)
+    .post(dataController.createData)
 
 router.get("/range", authMiddleware, dataController.getDataInRange)
 router.post("/createTestData", authMiddleware, dataController.createTestData)

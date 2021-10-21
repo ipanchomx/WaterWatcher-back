@@ -1,4 +1,5 @@
 const dataSchema = require('../models/data.model');
+const boardUtils = require("../utils/board.utils");
 const jwt = require("jsonwebtoken");
 
 const getTodayData = async (req, res) => {
@@ -42,9 +43,8 @@ const getDataInRange = async (req, res) => {
 
 const createData = async (req, res) => {
     let { flow, volume } = req.body;
-    let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
-    
-    if(!idUser || typeof flow === "undefined" || typeof volume === "undefined") return res.status(400).send({error: true, message: 'Missing required fields!'});
+    let idUser = await boardUtils.getBoardUser(req.headers.idboard);
+    if(typeof idUser === "undefined" || typeof flow === "undefined" || typeof volume === "undefined") return res.status(400).send({error: true, message: 'Missing required fields!'});
 
     try {
         let newData = dataSchema({
