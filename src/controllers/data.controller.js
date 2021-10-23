@@ -21,13 +21,14 @@ const getTodayData = async (req, res) => {
     
 }
 
-const getLastData = async (req, res) => {
+const getLastDataByBoard = async (req, res) => {
     let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
+    let idboard = req.headers.idboard;
 
-    if(!idUser) return res.status(400).send({ error: true, message: "Missing id user!"});
+    if(!idUser || !idboard) return res.status(400).send({ error: true, message: "Missing required fields!"});
 
     try {
-        let data = await dataSchema.findOne({ idUser }).sort({ timestamp: -1 });
+        let data = await dataSchema.findOne({ idUser, idboard }).sort({ timestamp: -1 });
 
         return res.status(200).send({data, message: "Data found succesfully!"});
     } catch (error) {
@@ -65,7 +66,8 @@ const createData = async (req, res) => {
             timestamp : Date.now(),
             idUser,
             flow,
-            volume
+            volume,
+            idboard: req.headers.idboard
         });
 
         let result = await newData.save();
@@ -110,5 +112,5 @@ module.exports = {
     createData,
     getDataInRange,
     createTestData,
-    getLastData
+    getLastDataByBoard
 }
