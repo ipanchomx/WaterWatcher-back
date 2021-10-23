@@ -8,9 +8,9 @@ const getTodayData = async (req, res) => {
     if(!idUser) return res.status(400).send({ error: true, message: "Missing id user!"});
     
     let dateTemp = new Date();
-    let dateToday = new Date(`${dateTemp.getFullYear()}-${dateTemp.getMonth() + 1}-${dateTemp.getDate()}`).getTime();
-
-
+    let dateToday = new Date(`${dateTemp.getFullYear()}-${dateTemp.getMonth() + 1}-${dateTemp.getDate()}`);
+    dateToday.setHours(dateToday.getHours() + 5);
+    dateToday = dateToday.getTime();
     try {
         let data = await dataSchema.find({ idUser, timestamp : { $gte : dateToday } });
         
@@ -19,6 +19,20 @@ const getTodayData = async (req, res) => {
         return res.status(500).send({errorMessage: error})
     }
     
+}
+
+const getLastData = async (req, res) => {
+    let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
+
+    if(!idUser) return res.status(400).send({ error: true, message: "Missing id user!"});
+
+    try {
+        let data = await dataSchema.findOne({ idUser }).sort({ timestamp: -1 });
+
+        return res.status(200).send({data, message: "Data found succesfully!"});
+    } catch (error) {
+        return res.status(500).send({errorMessage: error})
+    }
 }
 
 const getDataInRange = async (req, res) => {
@@ -95,5 +109,6 @@ module.exports = {
     getTodayData,
     createData,
     getDataInRange,
-    createTestData
+    createTestData,
+    getLastData
 }

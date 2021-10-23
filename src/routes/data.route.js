@@ -10,5 +10,6 @@ router.route('/')
 
 router.get("/range", authMiddleware, dataController.getDataInRange)
 router.post("/createTestData", authMiddleware, dataController.createTestData)
+router.get("/lastData", authMiddleware, dataController.getLastData)
 
 module.exports = router;
