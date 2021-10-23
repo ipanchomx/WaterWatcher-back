@@ -5,5 +5,6 @@ const authMiddleware = require("../middlewares/auth.middleware");
 const router = express.Router();
 
 router.post("/",authMiddleware, boardController.createBoard)
+router.get("/", authMiddleware, boardController.getBoardsByidUser)
 
 module.exports = router;
