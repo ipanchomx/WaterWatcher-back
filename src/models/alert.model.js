@@ -5,6 +5,10 @@ let alertSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    idBoard: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true

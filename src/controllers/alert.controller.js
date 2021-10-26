@@ -2,15 +2,16 @@ const alertSchema = require('../models/alert.model');
 const jwt = require("jsonwebtoken");
 
 const createAlert = async (req, res) => {
-    let { name, type, range, limit, periodQuantity, periodType, contactChannel } = req.body;
+    let { idBoard, name, type, range, limit, periodQuantity, periodType, contactChannel } = req.body;
     let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
     
-    if(!idUser || !name || !type || !limit) return res.status(400).send({error: true, message: 'Missing required fields!'});
+    if(!idUser || !idBoard || !name || !type || !limit) return res.status(400).send({error: true, message: 'Missing required fields!'});
     
     try {
 
         let newAlert = alertSchema({
             idUser,
+            idBoard,
             name,
             type,                       // VOLUME / SCHEDULE    
             range: range ? range : {},  // range -> { start : "", end : ""}
