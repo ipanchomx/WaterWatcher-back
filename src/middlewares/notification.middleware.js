@@ -15,14 +15,31 @@ let notificationMiddleware = function (req, res, next) {
                     let alertStartMinute = alert.range.start.minute;
                     let alertEndHour = (alert.range.end.hour + 5) % 24; // +5 to convert to UTC
                     let alertEndMinute = alert.range.end.minute;
-
-                    if (volume >= alert.limit && now.getUTCHours() >= alertStartHour && now.getUTCHours() < alertEndHour && now.getUTCMinutes() >= alertStartMinute && now.getUTCMinutes() < alertEndMinute) {
-                        // send notification
-                        
+                    let nowDate = new Date(1999, 11, 1, now.getUTCHours(), now.getUTCMinutes(), 0);
+                    let start = new Date(1999, 11, 1, alertStartHour, alertStartMinute, 0);
+                    let end;
+                    if(alertStartHour < alertEndHour) {
+                        end = new Date(1999, 11, 1, alertEndHour, alertEndMinute, 0);
+                    } else if (alertStartHour > alertEndHour) {
+                        end = new Date(1999, 11, 2, alertEndHour, alertEndMinute, 0);
+                    } else if (alertStartMinute < alertEndMinute) {
+                        end = new Date(1999, 11, 1, alertEndHour, alertEndMinute, 0);
+                    } else {
+                        end = new Date(1999, 11, 2, alertEndHour, alertEndMinute, 0);
                     }
+
+                    if(nowDate.getTime() < start.getTime()) {
+                        nowDate.setDate(nowDate.getUTCDate() + 1);
+                    }
+
+                   if (volume >= alert.limit && (nowDate.getTime() > start.getTime()) && (nowDate.getTime() < end.getTime()) ) {  
+                        // send notification    
+                    }
+
                     break;
 
                 case 'volume':
+                    
 
                     break;
 
