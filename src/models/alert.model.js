@@ -33,6 +33,9 @@ let alertSchema = mongoose.Schema({
     contactChannel: {
         type: mongoose.Schema.Types.Mixed
     },
+    lastNotificationDate: {
+        type: String,
+    },
 });
 
 let Alert = mongoose.model("alert", alertSchema);
