@@ -24,6 +24,10 @@ let dataSchema = mongoose.Schema({
     idboard: {
         type: String,
         required: true
+    },
+    continuity: {
+        type: Number,
+        required: true
     }
 });
 
