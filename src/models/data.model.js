@@ -17,6 +17,10 @@ let dataSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    accVolume: {
+        type: Number,
+        required: true
+    },
     idboard: {
         type: String,
         required: true

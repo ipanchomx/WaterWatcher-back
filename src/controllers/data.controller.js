@@ -58,15 +58,19 @@ const getDataInRange = async (req, res) => {
 
 const createData = async (req, res) => {
     let { flow, volume } = req.body;
-    let idUser = await boardUtils.getBoardUser(req.headers.idboard);
+    let idBoard = req.headers.idboard;
+    let idUser = await boardUtils.getBoardUser(idBoard);
     if(typeof idUser === "undefined" || typeof flow === "undefined" || typeof volume === "undefined") return res.status(400).send({error: true, message: 'Missing required fields!'});
 
+    let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
+    let accVolume = lastData.accVolume? lastData.accVolume + volume : volume;
     try {
         let newData = dataSchema({
             timestamp : Date.now(),
             idUser,
             flow,
             volume,
+            accVolume,
             idboard: req.headers.idboard
         });
 
