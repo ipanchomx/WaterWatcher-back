@@ -16,7 +16,7 @@ const createAlert = async (req, res) => {
             type,                       // VOLUME / SCHEDULE    
             range: range ? range : {},  // range -> { start : "", end : ""}
             limit,
-            periodQuantity: periodQuantity ? periodQuantity : "",
+            periodQuantity: periodQuantity ? periodQuantity : 0,
             periodType: periodType ? periodType : "",
             contactChannel: contactChannel ? contactChannel : {},  // contactChannel -> { type : "{TELEPHONE / DISCORD}", contact : " 1234567890 / @testUser"}
         });
