@@ -34,7 +34,7 @@ let alertSchema = mongoose.Schema({
         type: mongoose.Schema.Types.Mixed
     },
     lastNotificationDate: {
-        type: String,
+        type: Number,
     },
 });
 
