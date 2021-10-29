@@ -31,12 +31,7 @@ const getBoardsByidUser = async (req, res) => {
 
     try {
         let result = await boardSchema.find({idUser});
-
-        if(result.length > 0) {
-            return res.status(200).send({ data: result, message: "Board retrieved succesfully!" });
-        } else {
-            throw "Could not retrieve data!";
-        }
+        return res.status(200).send({ data: result, message: "Board retrieved succesfully!" });
     } catch (error) {
         return res.status(500).send({errorMessage: error})
     }
