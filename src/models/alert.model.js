@@ -22,7 +22,6 @@ let alertSchema = mongoose.Schema({
     },
     limit: {
         type: Number,
-        required: true
     },
     periodQuantity: {
         type: Number,

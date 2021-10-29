@@ -5,7 +5,7 @@ const createAlert = async (req, res) => {
     let { idBoard, name, type, range, limit, periodQuantity, periodType, contactChannel } = req.body;
     let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
     
-    if(!idUser || !idBoard || !name || !type || !limit) return res.status(400).send({error: true, message: 'Missing required fields!'});
+    if(!idUser || !idBoard || !name || !type) return res.status(400).send({error: true, message: 'Missing required fields!'});
     
     try {
 
@@ -15,7 +15,7 @@ const createAlert = async (req, res) => {
             name,
             type,                       // VOLUME / SCHEDULE    
             range: range ? range : {},  // range -> { start : "", end : ""}
-            limit,
+            limit: limit ? limit : 0,
             periodQuantity: periodQuantity ? periodQuantity : 0,
             periodType: periodType ? periodType : "",
             contactChannel: contactChannel ? contactChannel : {},  // contactChannel -> { type : "{TELEPHONE / DISCORD}", contact : " 1234567890 / @testUser"}
