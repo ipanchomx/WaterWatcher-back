@@ -2,15 +2,16 @@ const boardSchema = require('../models/board.model');
 const jwt = require("jsonwebtoken");
 
 const createBoard = async (req, res) => {
-    let { idBoard } = req.body;
+    let { idBoard, name } = req.body;
     let idUser = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
     
-    if(!idUser || !idBoard) return res.status(400).send({error: true, message: 'Missing required fields!'});
+    if(!idUser || !idBoard || !name) return res.status(400).send({error: true, message: 'Missing required fields!'});
 
     try {
         let newBoard = boardSchema({
             idUser,
-            idBoard
+            idBoard,
+            name
         });
 
         let result = await newBoard.save();
