@@ -73,7 +73,25 @@ let notificationMiddleware = async function (req, res, next) {
                     break;
 
                 case 'time':
+                    let periodQuantity = alert.periodQuantity;
+                    let periodType = alert.periodType;
+                    let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
+                    let lastNotificationDate = alert.lastNotificationDate ? alert.lastNotificationDate : 0;
+                    let tenMinutes = 10*60*1000;
+                    let notificationDelayOver = lastNotificationDate + (tenMinutes) < now.getTime();
 
+                    if(notificationDelayOver) {
+                        let continuityLimit = 0;
+                        if(periodType == "hours") continuityLimit = periodQuantity * 60;
+                        else continuityLimit = periodQuantity;
+    
+                        let continuityLastData = lastData.continuity;
+    
+                        if(continuityLastData >= continuityLimit) {
+                            await alertSchema.findByIdAndUpdate(alert._id, { lastNotificationDate: now.getTime() }, { new: true })
+                            console.log('notification sent time');
+                        }
+                    }
                     break;
 
                 default:
