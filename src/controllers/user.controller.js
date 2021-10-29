@@ -70,9 +70,28 @@ const getUser = async function(req, res) {
     }
 }
 
+const updateUser = async function(req, res) {
+    let id = jwt.verify(req.headers.authorization,process.env.TOKEN_SECRET).id;
+    if(!id) return res.status(400).send({ error: true, message: "Missing id user!"});
+    try {
+        let userFound = await UserSchema.findById(id);
+        if(!userFound) return res.status(404).send({ error : true, message: "User not found!"});
+        let {name, password, telephone, discordUser} = req.body;
+        if(name) userFound.name = name;
+        if(password) userFound.password = password;
+        if(telephone) userFound.telephone = telephone;
+        if(discordUser) userFound.discordUser = discordUser;
+        let result = await userFound.save();
+        if(result) return res.status(200).send({user: userFound, message: "User updated succesfully!"})
+    }
+    catch (error) {
+        return res.status(500).send({errorMessage: error})
+    }
+}
 
 module.exports = {
     createUser,
     login,
-    getUser
+    getUser,
+    updateUser
 }
