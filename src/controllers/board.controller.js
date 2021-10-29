@@ -16,7 +16,7 @@ const createBoard = async (req, res) => {
         let result = await newBoard.save();
 
         if(result) {
-            return res.status(201).send({ data: newBoard, message: "Data created succesfully!" });
+            return res.status(201).send({ data: newBoard, message: "Board created succesfully!" });
         } else {
             throw "Could not create data!";
         }   
@@ -33,7 +33,7 @@ const getBoardsByidUser = async (req, res) => {
         let result = await boardSchema.find({idUser});
 
         if(result.length > 0) {
-            return res.status(200).send({ data: result, message: "Data retrieved succesfully!" });
+            return res.status(200).send({ data: result, message: "Board retrieved succesfully!" });
         } else {
             throw "Could not retrieve data!";
         }
