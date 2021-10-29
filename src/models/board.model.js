@@ -8,6 +8,10 @@ let boardSchema = mongoose.Schema({
     idBoard: {
         type: String,
         required: true
+    },
+    name:{
+        type: String,
+        required: true
     }
 });
 
