@@ -11,6 +11,8 @@ let notificationMiddleware = async function (req, res, next) {
         userAlerts.forEach(async alert => {
             let periodQuantity = alert.periodQuantity;
             let periodType = alert.periodType;
+            let lastNotificationDate = alert.lastNotificationDate ? alert.lastNotificationDate : 0;
+            let notificationDelayOver;
             switch (alert.type) {
                 case 'schedule':
                     let alertStartHour = (alert.range.start.hour + 5) % 24; // +5 to convert to UTC
@@ -56,8 +58,7 @@ let notificationMiddleware = async function (req, res, next) {
                             periodTypeToMilliseconds = 2592000000;
                             break;
                     }
-                    let lastNotificationDate = alert.lastNotificationDate ? alert.lastNotificationDate : 0;
-                    let notificationDelayOver = lastNotificationDate + (periodQuantity * periodTypeToMilliseconds) < now.getTime()
+                    notificationDelayOver = lastNotificationDate + (periodQuantity * periodTypeToMilliseconds) < now.getTime()
                     if (notificationDelayOver) {
                         let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
                         let totalVolume = lastData.accVolume + volume;
@@ -76,9 +77,8 @@ let notificationMiddleware = async function (req, res, next) {
 
                 case 'time':
                     let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
-                    let lastNotificationDate = alert.lastNotificationDate ? alert.lastNotificationDate : 0;
                     let tenMinutes = 10*60*1000;
-                    let notificationDelayOver = lastNotificationDate + (tenMinutes) < now.getTime();
+                    notificationDelayOver = lastNotificationDate + (tenMinutes) < now.getTime();
 
                     if(notificationDelayOver) {
                         let continuityLimit = 0;
