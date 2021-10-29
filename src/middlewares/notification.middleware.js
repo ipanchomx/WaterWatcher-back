@@ -9,6 +9,8 @@ let notificationMiddleware = async function (req, res, next) {
     try {
         let userAlerts = await alertSchema.find({ idBoard });
         userAlerts.forEach(async alert => {
+            let periodQuantity = alert.periodQuantity;
+            let periodType = alert.periodType;
             switch (alert.type) {
                 case 'schedule':
                     let alertStartHour = (alert.range.start.hour + 5) % 24; // +5 to convert to UTC
@@ -35,14 +37,13 @@ let notificationMiddleware = async function (req, res, next) {
                     if (volume >= alert.limit && (nowDate.getTime() > start.getTime()) && (nowDate.getTime() < end.getTime())) {
                         // send notification    
                         console.log('send notification Schedule');
+                        sendNotification(alert)
                     }
 
                     break;
 
                 case 'volume':
                     let limit = alert.limit;
-                    let periodQuantity = alert.periodQuantity;
-                    let periodType = alert.periodType;
                     let periodTypeToMilliseconds;
                     switch (periodType) {
                         case 'days':
@@ -68,13 +69,12 @@ let notificationMiddleware = async function (req, res, next) {
                             // send notification
                             await alertSchema.findByIdAndUpdate(alert._id, { lastNotificationDate: now.getTime() }, { new: true })
                             console.log('notification sent Volume');
+                            sendNotification(alert)
                         }
                     }
                     break;
 
                 case 'time':
-                    let periodQuantity = alert.periodQuantity;
-                    let periodType = alert.periodType;
                     let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
                     let lastNotificationDate = alert.lastNotificationDate ? alert.lastNotificationDate : 0;
                     let tenMinutes = 10*60*1000;
@@ -90,6 +90,7 @@ let notificationMiddleware = async function (req, res, next) {
                         if(continuityLastData >= continuityLimit) {
                             await alertSchema.findByIdAndUpdate(alert._id, { lastNotificationDate: now.getTime() }, { new: true })
                             console.log('notification sent time');
+                            sendNotification(alert)
                         }
                     }
                     break;
@@ -104,3 +105,15 @@ let notificationMiddleware = async function (req, res, next) {
     }
 }
 module.exports = notificationMiddleware
+
+function sendNotification(alert) {
+    switch (alert.contactChannel.type) {
+        case 'email':
+
+            break;
+        case 'sms':
+            break;
+        case 'discord':
+            break;
+    }
+}
