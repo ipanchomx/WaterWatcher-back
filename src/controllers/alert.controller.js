@@ -92,10 +92,27 @@ const updateUserAlertScheduleById = async (req, res) => {
     }
 }
 
+const updateUserAlertTimeById = async (req, res) => {
+    let { idAlert, periodQuantity, periodType, contactChannel } = req.body;
+
+    if(!idAlert || !periodQuantity || !periodType || !contactChannel) return res.status(400).send({error: true, message: 'Missing required fields!'});
+
+    console.log(req.body)
+    try {
+        let result = await alertSchema.findByIdAndUpdate(idAlert, { periodQuantity, periodType, contactChannel }, { new : true })
+
+        if(result)  return res.status(200).send({ alert: result, message : "Alert updated succesfully!"});
+        else throw "Alert could not update succesfully!"
+    } catch (error) {
+        return res.status(500).send({errorMessage: error})      
+    }
+}
+
 module.exports = {
     createAlert,
     getUserAlerts,
     deleteUserAlertById,
     updateUserAlertVolumeById,
-    updateUserAlertScheduleById
+    updateUserAlertScheduleById,
+    updateUserAlertTimeById
 }

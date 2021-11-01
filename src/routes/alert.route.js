@@ -15,4 +15,6 @@ router.put('/updateVolume', alertController.updateUserAlertVolumeById)
 
 router.put('/updateSchedule', alertController.updateUserAlertScheduleById)
 
+router.put('/updateTime', alertController.updateUserAlertTimeById)
+
 module.exports = router;
