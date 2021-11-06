@@ -1,13 +1,16 @@
 const alertSchema = require('../models/alert.model');
 const dataSchema = require('../models/data.model');
+var request = require('request');
 
 let notificationMiddleware = async function (req, res, next) {
     let idBoard = req.headers.idboard
     let { flow, volume } = req.body;
     if (!idBoard) return res.status(400).send({ error: true, message: 'Missing required header!' });
     let now = new Date();
+   
     try {
         let userAlerts = await alertSchema.find({ idBoard });
+
         userAlerts.forEach(async alert => {
             let periodQuantity = alert.periodQuantity;
             let periodType = alert.periodType;
@@ -77,17 +80,17 @@ let notificationMiddleware = async function (req, res, next) {
 
                 case 'time':
                     let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
-                    let tenMinutes = 10*60*1000;
+                    let tenMinutes = 10 * 60 * 1000;
                     notificationDelayOver = lastNotificationDate + (tenMinutes) < now.getTime();
 
-                    if(notificationDelayOver) {
+                    if (notificationDelayOver) {
                         let continuityLimit = 0;
-                        if(periodType == "hours") continuityLimit = periodQuantity * 60;
+                        if (periodType == "hours") continuityLimit = periodQuantity * 60;
                         else continuityLimit = periodQuantity;
-    
+
                         let continuityLastData = lastData.continuity;
-    
-                        if(continuityLastData >= continuityLimit) {
+
+                        if (continuityLastData >= continuityLimit) {
                             await alertSchema.findByIdAndUpdate(alert._id, { lastNotificationDate: now.getTime() }, { new: true })
                             console.log('notification sent time');
                             sendNotification(alert)
@@ -107,11 +110,43 @@ let notificationMiddleware = async function (req, res, next) {
 module.exports = notificationMiddleware
 
 function sendNotification(alert) {
+
     switch (alert.contactChannel.type) {
         case 'email':
+            var options = {
+                'method': 'POST',
+                'url': 'https://api.sendgrid.com/v3/mail/send',
+                'headers': {
+                    'Authorization': `Bearer ${alert.contactChannel.EMAIL_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "from": {
+                        "email": `${alert.contactChannel.SENDER_EMAIL}`
+                    },
+                    "personalizations": [
+                        {
+                            "to": [
+                                {
+                                    "email": `${alert.contactChannel.contact}`
+                                }
+                            ],
+                            "dynamic_template_data": {
+                                "mensaje": `Ha sonado la alerta : ${alert.name}` 
+                            }
+                        }
+                    ],
+                    "template_id": `${alert.contactChannel.TEMPLATE_ID}`
+                })
 
+            };
+            request(options, function (error, response) {
+                if (error) throw new Error(error);
+                console.log(response.body);
+            });
             break;
         case 'sms':
+
             break;
         case 'discord':
             break;
