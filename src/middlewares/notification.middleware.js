@@ -1,6 +1,6 @@
 const alertSchema = require('../models/alert.model');
 const dataSchema = require('../models/data.model');
-
+let request = require('request');
 let notificationMiddleware = async function (req, res, next) {
     let idBoard = req.headers.idboard
     let { flow, volume } = req.body;
@@ -101,19 +101,48 @@ let notificationMiddleware = async function (req, res, next) {
         });
         next();
     } catch (error) {
+        console.log("error: ", error)
         return res.status(500).send({ errorMessage: error })
     }
 }
 module.exports = notificationMiddleware
 
 function sendNotification(alert) {
-    switch (alert.contactChannel.type) {
-        case 'email':
-
-            break;
-        case 'sms':
-            break;
-        case 'discord':
-            break;
+    try {
+        console.log("sendNotification")
+        console.log(alert)
+        switch (alert.contactChannel.type) {
+            case 'email':
+    
+                break;
+            case 'sms':
+                console.log("sendNotification SMS")
+                let options = {
+                  'method': 'POST',
+                  'url': 'https://rest-api.d7networks.com/secure/send',
+                  'headers': {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ***REMOVED***'
+                  },
+                  "body": JSON.stringify({
+                        to : "***REMOVED***",
+                        content : "SMS test",
+                        from : "Water Watcher"
+                    })
+                
+                };
+                
+                request(options, function (err, response) {
+                  if (err) throw new Error(err);
+                  console.log(response.body);
+                });            
+                break;
+            case 'discord':
+                break;
+        }        
+    } catch (error) {
+        console.log("error")
+        console.log(error)
     }
+   
 }
