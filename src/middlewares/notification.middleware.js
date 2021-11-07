@@ -85,7 +85,7 @@ let notificationMiddleware = async function (req, res, next) {
 
                     if (notificationDelayOver) {
                         let continuityLimit = 0;
-                        if (periodType == "hours") continuityLimit = periodQuantity * 60;
+                        if (periodType == "HOURS") continuityLimit = periodQuantity * 60;
                         else continuityLimit = periodQuantity;
 
                         let continuityLastData = lastData.continuity;
@@ -110,19 +110,18 @@ let notificationMiddleware = async function (req, res, next) {
 module.exports = notificationMiddleware
 
 function sendNotification(alert) {
-
     switch (alert.contactChannel.type) {
-        case 'email':
+        case 'EMAIL':
             var options = {
                 'method': 'POST',
                 'url': 'https://api.sendgrid.com/v3/mail/send',
                 'headers': {
-                    'Authorization': `Bearer ${alert.contactChannel.EMAIL_API_KEY}`,
+                    'Authorization': `Bearer ${process.env.EMAIL_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     "from": {
-                        "email": `${alert.contactChannel.SENDER_EMAIL}`
+                        "email": `${process.env.SENDER_EMAIL}`
                     },
                     "personalizations": [
                         {
@@ -136,19 +135,21 @@ function sendNotification(alert) {
                             }
                         }
                     ],
-                    "template_id": `${alert.contactChannel.TEMPLATE_ID}`
+                    "template_id": `${process.env.TEMPLATE_ID}`
                 })
 
             };
+            console.log("Sending email");
             request(options, function (error, response) {
                 if (error) throw new Error(error);
+                console.log(response.statusCode);
                 console.log(response.body);
             });
             break;
-        case 'sms':
+        case 'SMS':
 
             break;
-        case 'discord':
+        case 'DISCORD':
             break;
     }
 }
