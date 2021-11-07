@@ -117,12 +117,12 @@ function sendNotification(alert) {
                 'method': 'POST',
                 'url': 'https://api.sendgrid.com/v3/mail/send',
                 'headers': {
-                    'Authorization': 'Bearer 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',
+                    'Authorization': `Bearer ${alert.contactChannel.EMAIL_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     "from": {
-                        "email": "is715773@iteso.mx"
+                        "email": `${alert.contactChannel.SENDER_EMAIL}`
                     },
                     "personalizations": [
                         {
@@ -136,7 +136,7 @@ function sendNotification(alert) {
                             }
                         }
                     ],
-                    "template_id": "d-6c4c87ff44c2413ababd980fb945688a"
+                    "template_id": `${alert.contactChannel.TEMPLATE_ID}`
                 })
 
             };
