@@ -171,9 +171,10 @@ function sendNotification(alert) {
             break;
         case 'TELEGRAM':
             console.log("sendNotification TELEGRAM")
+            let msg = `Water Watcher te informa que se activo la alerta ${alert.name}. `
             options = {
                 'method': 'GET',
-                'url': `http://api.callmebot.com/start.php?user=@${alert.contactChannel.contact}&text=WaterWatcher+te+informa+que+se+activo+la+alarma+${alert.name}&lang=es-US-Standard-A&rpt=10`
+                'url': `http://api.callmebot.com/start.php?user=@${alert.contactChannel.contact}&text=${msg}${msg}&lang=es-US-Standard-A&rpt=10`
               };
 
               request(options, function (err, response) {
