@@ -112,7 +112,7 @@ module.exports = notificationMiddleware
 function sendNotification(alert) {
     switch (alert.contactChannel.type) {
         case 'EMAIL':
-            var options = {
+            let options = {
                 'method': 'POST',
                 'url': 'https://api.sendgrid.com/v3/mail/send',
                 'headers': {
@@ -153,11 +153,11 @@ function sendNotification(alert) {
               'url': 'https://rest-api.d7networks.com/secure/send',
               'headers': {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ***REMOVED***'
+                'Authorization': `Basic ${process.env.SMS_API_KEY}` 
               },
               "body": JSON.stringify({
-                    to : "***REMOVED***",
-                    content : "SMS test",
+                    to : `+52${alert.contactChannel.contact}`,
+                    content : `Se ha superado tu limite de tolerancia. Tienes una fuga de agua.`,
                     from : "Water Watcher"
                 })
             
@@ -168,7 +168,7 @@ function sendNotification(alert) {
               console.log(response.body);
             });            
             break;
-        case 'DISCORD':
+        case 'TELEGRAM':
             break;
     }
    
