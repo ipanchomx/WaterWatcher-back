@@ -157,7 +157,7 @@ function sendNotification(alert) {
               },
               "body": JSON.stringify({
                     to : `+52${alert.contactChannel.contact}`,
-                    content : `Se ha superado tu limite de tolerancia. Tienes una fuga de agua.`,
+                    content : `Water Watcher te informa que se activo la alarma ${alert.name}`,
                     from : "Water Watcher"
                 })
             
@@ -169,6 +169,16 @@ function sendNotification(alert) {
             });            
             break;
         case 'TELEGRAM':
+            console.log("sendNotification TELEGRAM")
+            let options = {
+                'method': 'GET',
+                'url': `http://api.callmebot.com/start.php?user=@${alert.contactChannel.contact}&text=WaterWatcher+te+informa+que+se+activo+la+alarma+${alert.name}lang=es-US-Standard-A&rpt=10`
+              };
+
+              request(options, function (err, response) {
+                if (err) throw new Error(err);
+                console.log(response.body);
+              });  
             break;
     }
    
