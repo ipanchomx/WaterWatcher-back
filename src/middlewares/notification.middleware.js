@@ -110,9 +110,10 @@ let notificationMiddleware = async function (req, res, next) {
 module.exports = notificationMiddleware
 
 function sendNotification(alert) {
+    let options;
     switch (alert.contactChannel.type) {
         case 'EMAIL':
-            let options = {
+            options = {
                 'method': 'POST',
                 'url': 'https://api.sendgrid.com/v3/mail/send',
                 'headers': {
@@ -148,7 +149,7 @@ function sendNotification(alert) {
             break;
         case 'SMS':
             console.log("sendNotification SMS")
-            let options = {
+            options = {
               'method': 'POST',
               'url': 'https://rest-api.d7networks.com/secure/send',
               'headers': {
@@ -170,7 +171,7 @@ function sendNotification(alert) {
             break;
         case 'TELEGRAM':
             console.log("sendNotification TELEGRAM")
-            let options = {
+            options = {
                 'method': 'GET',
                 'url': `http://api.callmebot.com/start.php?user=@${alert.contactChannel.contact}&text=WaterWatcher+te+informa+que+se+activo+la+alarma+${alert.name}lang=es-US-Standard-A&rpt=10`
               };
