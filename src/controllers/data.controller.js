@@ -65,7 +65,11 @@ const createData = async (req, res) => {
     let continuity = continuityL + continuityH * 255;
 
     let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
-    let accVolume = lastData.accVolume != null? lastData.accVolume + volume : volume;
+    let accVolume = 0;
+    if(lastData != null)  accVolume = lastData.accVolume != undefined? lastData.accVolume + volume : volume;
+    console.log(lastData);
+    console.log(accVolume);
+    
     try {
         let newData = dataSchema({
             timestamp: Date.now(),
