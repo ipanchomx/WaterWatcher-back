@@ -2,6 +2,7 @@ const alertSchema = require('../models/alert.model');
 const dataSchema = require('../models/data.model');
 let request = require('request');
 let notificationMiddleware = async function (req, res, next) {
+    console.log("notificationMiddleware");
     let idBoard = req.headers.idboard
     let { flow, volume } = req.body;
     if (!idBoard) return res.status(400).send({ error: true, message: 'Missing required header!' });
@@ -9,12 +10,13 @@ let notificationMiddleware = async function (req, res, next) {
    
     try {
         let userAlerts = await alertSchema.find({ idBoard });
-
+        
         userAlerts.forEach(async alert => {
             let periodQuantity = alert.periodQuantity;
             let periodType = alert.periodType;
             let lastNotificationDate = alert.lastNotificationDate ? alert.lastNotificationDate : 0;
             let notificationDelayOver;
+            console.log(`Type ${alert.type}`)
             switch (alert.type) {
                 case 'schedule':
                     let alertStartHour = (alert.range.start.hour + 5) % 24; // +5 to convert to UTC
@@ -79,7 +81,7 @@ let notificationMiddleware = async function (req, res, next) {
 
                 case 'time':
                     let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
-                    let tenMinutes = 10 * 60 * 1000;
+                    let tenMinutes = 5 * 60 * 1000;
                     notificationDelayOver = lastNotificationDate + (tenMinutes) < now.getTime();
 
                     if (notificationDelayOver) {

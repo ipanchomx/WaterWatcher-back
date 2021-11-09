@@ -30,6 +30,11 @@ const getLastDataByBoard = async (req, res) => {
     try {
         let data = await dataSchema.findOne({ idUser, idboard }).sort({ timestamp: -1 });
 
+        let now = Date.now()
+        if(data.timestamp < now - (1000 * 80)){
+            //Ya expiro el tiempo de la data
+            data.volume = 0;
+        }
         return res.status(200).send({ data, message: "Data found succesfully!" });
     } catch (error) {
         return res.status(500).send({ errorMessage: error })
@@ -67,8 +72,6 @@ const createData = async (req, res) => {
     let lastData = await dataSchema.findOne({ idBoard }).sort({ timestamp: -1 });
     let accVolume = 0;
     if(lastData != null)  accVolume = lastData.accVolume != undefined? lastData.accVolume + volume : volume;
-    console.log(lastData);
-    console.log(accVolume);
     
     try {
         let newData = dataSchema({
